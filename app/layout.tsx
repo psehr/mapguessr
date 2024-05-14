@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description: "A game about guessing osu! beatmaps from their background",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

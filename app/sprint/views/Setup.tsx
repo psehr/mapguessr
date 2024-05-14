@@ -8,7 +8,7 @@ export default function Setup(props: {
   chatData: Chat;
   updateChat: any;
 }) {
-  let [buttonText, setButtonText] = useState("Start");
+  let [buttonText, setButtonText] = useState("Play");
   let [buttonColor, setButtonColor] = useState("bg-green-600");
 
   return (

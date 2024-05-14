@@ -1,4 +1,3 @@
-import Timer from "@/app/components/Timer";
 import { useState } from "react";
 
 export default function Loading() {

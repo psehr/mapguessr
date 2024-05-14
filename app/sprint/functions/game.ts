@@ -5,22 +5,25 @@ import {
   GameBeatmap,
   SprintGameData,
 } from "../../../../types";
-import { getSprint } from "@/lib/local_api";
+import { getSprint, getUser, postSprint } from "@/lib/local_api";
 import { isValidGuess } from "@/lib/utils";
 import { clearChat, newMessage, openChatSession } from "./chat";
 import { preciseTimeFormat } from "./utils";
+import { Session } from "next-auth";
 
-export async function startGame(updateData: any, setView: any, chatData: Chat, updateChat: any) {
+export async function startGame(updateData: any, setView: any, chatData: Chat, updateChat: any, session: Session) {
   let startMsg: ChatMessage = {
     timestamp: Date.now(),
     status: "announce",
     style: { bold: true, color: "red" },
     content: "🏁 Game starts now! 🏁",
   };
+  let user = await getUser(session.user?.name!)
   let c = clearChat(updateChat)
+  updateData();
   newMessage(c, startMsg, updateChat);
   setView("loading");
-  getSprint('pseh').then((sgd) => {
+  getSprint(user.id.toString()).then((sgd) => {
     sgd.beatmaps[0].status = "current";
     sgd.startTime = Date.now();
     sgd.status = "ongoing";
@@ -28,6 +31,7 @@ export async function startGame(updateData: any, setView: any, chatData: Chat, u
     updateData(sgd);
     setView("game");
   });
+
 }
 
 export async function endGame(
@@ -39,6 +43,7 @@ export async function endGame(
 ) {
   let sgdCopy = { ...sgd };
   sgdCopy.endTime = Date.now();
+  sgdCopy.finalTime = sgdCopy.endTime - sgdCopy.startTime!
   sgdCopy.status = "finished";
   let endMsg: ChatMessage = {
     timestamp: Date.now(),
@@ -50,8 +55,9 @@ export async function endGame(
   };
   newMessage(chatData, endMsg, updateChat);
   updateData(sgdCopy);
-  setView("results");
-  console.log(sgd)
+  setView("results")
+  let ans = await postSprint(sgdCopy).catch((e) => console.log(e));
+  console.log(ans)
 }
 
 export async function guess(
@@ -100,10 +106,10 @@ export async function guess(
     let nextIndex = findNextIndex(sgdCopy);
     if (nextIndex == -1) {
       return endGame(sgd, updateData, setView, chatData, updateChat);
+    } else {
+      sgdCopy.beatmaps[nextIndex].status = "current";
+      updateData(sgdCopy);
     }
-
-    sgdCopy.beatmaps[nextIndex].status = "current";
-    updateData(sgdCopy);
   } else if (guessResult.validness > 0.5) {
     chatMsg.content = `"${guess}" is close!`
     chatMsg.style.color = 'yellow'

@@ -42,7 +42,7 @@ export default function SkipButton(props: {
   let [buttonColor, setButtonColor] = useState("bg-yellow-600");
   return (
     <button
-      className={`m-auto h-full w-24 px-8 rounded-2xl text-c-white text-2xl text-center font-bold transition-colors ease-in-out duration-700 ${buttonColor}`}
+      className={`m-auto h-full w-24 px-8 rounded-2xl text-c-white text-2xl text-center font-bold transition-colors ease-in-out duration-200 ${buttonColor}`}
       onClick={() => {
         if (props.sgd.additionalBeatmaps.length) {
           skip(props.sgd, props.updateData, props.chatData, props.updateChat);
