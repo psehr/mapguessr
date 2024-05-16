@@ -25,7 +25,7 @@ export default async function RootLayout({
         <div className="absolute w-full h-16 flex flex-row bg-c-dark drop-shadow-lg">
           <Nav></Nav>
         </div>
-        <div className="pt-8 w-full h-full flex flex-col bg-gradient-to-br from-c-darker-blue via-c-darker to-c-darker-blue">
+        <div className="pt-8 w-full h-full flex flex-col bg-gradient-to-br from-c-darker-blue via-c-darker to-c-darker-blue bg-repeat">
           {children}
         </div>
       </body>

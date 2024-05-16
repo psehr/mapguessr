@@ -28,6 +28,7 @@ export default function GameProgress(props: { maps: GameBeatmap[] }) {
           blurred = true;
           break;
       }
+      text.length > 30 ? (text = `[...] - ${map.metadata.title}`) : null;
       mapNodes.push(
         <SlimCover
           url={map.metadata.slimcover}
@@ -42,9 +43,5 @@ export default function GameProgress(props: { maps: GameBeatmap[] }) {
     });
     return mapNodes;
   };
-  return (
-    <div className="hidden md:flex flex-col w-[16%] h-[70%] bg-c-dark bg-opacity-30 justify-start items-center overflow-scroll snap-start py-2 rounded-2xl drop-shadow-lg">
-      {rendermaps(props.maps)}
-    </div>
-  );
+  return rendermaps(props.maps);
 }

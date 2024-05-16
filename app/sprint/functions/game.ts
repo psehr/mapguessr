@@ -5,10 +5,10 @@ import {
   GameBeatmap,
   SprintGameData,
 } from "../../../../types";
-import { getSprint, getUser, postSprint } from "@/lib/local_api";
+import { newSprint, getUser, postSprint } from "@/lib/local_api";
 import { isValidGuess } from "@/lib/utils";
-import { clearChat, newMessage, openChatSession } from "./chat";
-import { preciseTimeFormat } from "./utils";
+import { clearChat, newMessage } from "./chat";
+import { calcRating, preciseTimeFormat } from "./utils";
 import { Session } from "next-auth";
 
 export async function startGame(updateData: any, setView: any, chatData: Chat, updateChat: any, session: Session) {
@@ -23,11 +23,14 @@ export async function startGame(updateData: any, setView: any, chatData: Chat, u
   updateData();
   newMessage(c, startMsg, updateChat);
   setView("loading");
-  getSprint(user.id.toString()).then((sgd) => {
+  newSprint(user.id.toString()).then((sgd) => {
     sgd.beatmaps[0].status = "current";
     sgd.startTime = Date.now();
     sgd.status = "ongoing";
     sgd.skipsUsed = 0;
+    sgd.guessesLength = 0;
+    sgd.rating = 0;
+    sgd.beatmaps.forEach((beatmap) => beatmap.guessAccuracies = [])
     updateData(sgd);
     setView("game");
   });
@@ -44,6 +47,11 @@ export async function endGame(
   let sgdCopy = { ...sgd };
   sgdCopy.endTime = Date.now();
   sgdCopy.finalTime = sgdCopy.endTime - sgdCopy.startTime!
+  sgdCopy.cpm = parseInt(((sgdCopy.guessesLength! / (sgdCopy.finalTime / 1000)) * 60).toFixed())
+  let sum = 0;
+  sgdCopy.beatmaps.forEach((beatmap) => sum += beatmap.accuracy!);
+  sgdCopy.accuracy = sum / sgdCopy.beatmaps.length
+  sgdCopy.rating = calcRating(sgdCopy.finalTime, sgdCopy.accuracy);
   sgdCopy.status = "finished";
   let endMsg: ChatMessage = {
     timestamp: Date.now(),
@@ -55,9 +63,9 @@ export async function endGame(
   };
   newMessage(chatData, endMsg, updateChat);
   updateData(sgdCopy);
+  console.log(sgdCopy)
   setView("results")
-  let ans = await postSprint(sgdCopy).catch((e) => console.log(e));
-  console.log(ans)
+  await postSprint(sgdCopy).catch((e) => console.log(e));
 }
 
 export async function guess(
@@ -78,6 +86,8 @@ export async function guess(
     style: { bold: false, color: "standard" },
   };
 
+  sgdCopy.beatmaps[findCurrentIndex(sgdCopy)].guessAccuracies?.push(guessResult.validness);
+
   if (guessResult.valid) {
     switch (guessResult.type) {
       case "full":
@@ -94,13 +104,18 @@ export async function guess(
         break;
     }
 
+    let currentBeatmap = sgdCopy.beatmaps[findCurrentIndex(sgdCopy)];
+
     // chatMsg.content += `\n\n(${currentMap.metadata.artist} - ${currentMap.metadata.title} by ${currentMap.metadata.creator})`;
     chatMsg.style.color = "green";
+    let sum = 0;
+    currentBeatmap.guessAccuracies?.forEach((acc) => sum += acc);
+    currentBeatmap.accuracy = parseFloat((sum / currentBeatmap.guessAccuracies!.length).toFixed(2));
 
-    sgdCopy.beatmaps[findCurrentIndex(sgdCopy)].accuracy = guessResult.validness;
-    sgdCopy.beatmaps[findCurrentIndex(sgdCopy)].validGuess = guess;
-    sgdCopy.beatmaps[findCurrentIndex(sgdCopy)].splitTime = Date.now()
-    sgdCopy.beatmaps[findCurrentIndex(sgdCopy)].status = "found";
+    sgdCopy.guessesLength! += guess.length;
+    currentBeatmap.validGuess = guess;
+    currentBeatmap.splitTime = Date.now()
+    currentBeatmap.status = "found";
     newMessage(chatData, chatMsg, updateChat);
 
     let nextIndex = findNextIndex(sgdCopy);

@@ -1,12 +1,14 @@
 "use client";
-
+import levenshtein from "damerau-levenshtein";
 import { useRouter, usePathname } from "next/navigation";
 
 export default function NavButton(props: { title: string; link: string }) {
   const router = useRouter();
-  let color = usePathname().includes(props.title.toLowerCase())
-    ? " text-[#00ADB5]"
-    : " text-[#EEEEEE]";
+  const distance = levenshtein(
+    usePathname().split("/")[1],
+    props.title.toLowerCase()
+  ).similarity;
+  let color = distance > 0.7 ? " text-[#00ADB5]" : " text-[#EEEEEE]";
 
   return (
     <div className={"my-auto text-center text-xl font-semibold" + color}>

@@ -20,6 +20,7 @@ export default function SplitsTable(props: { gameData: SprintGameData }) {
           className={`font-bold flex flex-row w-full text-center py-3 px-2 ${
             index % 2 == 0 ? "bg-c-dark-blue" : "bg-c-darker-blue"
           } ${index == 9 ? "rounded-b-xl" : ""}`}
+          key={beatmap.metadata.title}
         >
           <td className="w-[4%] font-bold">{index + 1}</td>
           <td className="w-[55%] text-left text-nowrap overflow-x-auto">

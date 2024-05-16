@@ -19,10 +19,13 @@ export default async function Nav() {
           <Dot></Dot>
         </div> */}
         <NavButton title={"SPRINT"} link={"sprint"}></NavButton>
-        {/* <div className="my-auto">
+        <div className="my-auto">
           <Dot></Dot>
         </div>
-        <NavButton title={"MULTIPLAYER"} link={"multiplayer"}></NavButton> */}
+        <NavButton
+          title={"LEADERBOARDS"}
+          link={"leaderboards/sprint"}
+        ></NavButton>
       </div>
       <div className="w-[10%] h-full flex flex-row place-content-center items-center ml-auto">
         {session && session.user ? (

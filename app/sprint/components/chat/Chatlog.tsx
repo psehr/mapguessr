@@ -6,7 +6,9 @@ export default function ChatLog(props: { chatData: Chat }) {
   const renderChat = (chat: Chat) => {
     let chatNodes: ReactNode[] = [];
     chat.messages.forEach((msg) =>
-      chatNodes.push(<ChatMsg chatMessage={msg} key={msg.timestamp}></ChatMsg>)
+      chatNodes.push(
+        <ChatMsg chatMessage={msg} key={msg.timestamp + msg.content}></ChatMsg>
+      )
     );
     return chatNodes;
   };

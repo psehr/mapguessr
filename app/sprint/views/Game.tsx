@@ -17,7 +17,9 @@ export default function Game(props: {
   return (
     <div className="w-full h-full flex flex-col md:flex-row justify-center items-center md:space-x-6 text-c-dark">
       {/* A recap of the current game, hidden on mobile */}
-      <GameProgress maps={props.gameData.beatmaps}></GameProgress>
+      <div className="hidden md:flex flex-col w-[16%] h-[70%] bg-c-dark bg-opacity-30 justify-start items-center overflow-scroll snap-start py-2 rounded-2xl drop-shadow-lg">
+        <GameProgress maps={props.gameData.beatmaps}></GameProgress>
+      </div>
       {/* Main part, the timer, beatmap cover and an input field for the player to use */}
       <Playfield
         gameData={props.gameData}

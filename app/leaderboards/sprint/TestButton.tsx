@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { getUserSprint, postSprint } from "@/lib/local_api";
+import { getLeaderboards } from "@/lib/local_api";
 
 export default async function TestButton() {
   const session = await auth();
@@ -8,7 +8,8 @@ export default async function TestButton() {
       <form
         action={async () => {
           "use server";
-          let games = await getUserSprint(session.user?.name!);
+          let games = await getLeaderboards("sprint");
+          console.log(games.length);
         }}
       >
         <button
