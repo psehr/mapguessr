@@ -5,6 +5,7 @@ export default function SlimCover(props: {
   text: string;
   clickable: boolean;
   mapUrl: string;
+  index: number;
 }) {
   return (
     <div
@@ -23,10 +24,21 @@ export default function SlimCover(props: {
             props.blurred ? "blur-md" : "blur-0"
           }`}
         />
-        <div className="z-10 absolute w-full h-full text-c-white font-bold text-center content-center text-nowrap transition-all ease-in-out duration-500">
+        <div className="z-20 absolute w-full h-full text-c-white font-bold text-right pr-4 content-center text-nowrap transition-all ease-in-out duration-500">
           {props.text}
         </div>
-        <div className="absolute w-full h-full bg-black opacity-50"></div>
+        <div
+          className={`z-20 left-0 absolute h-full w-16 p-4 rounded-l-full bg-black/50 text-c-white
+          } font-bold flex place-content-center items-center text-lg border-r-2 border-gray-400/50 `}
+        >
+          #{props.index}
+        </div>
+        <div
+          className={`z-10 absolute w-full h-full ${
+            "bg-" + props.borderColor
+          } bg-opacity-5`}
+        ></div>
+        <div className="z-0 absolute w-full h-full bg-black opacity-50"></div>
       </div>
     </div>
   );

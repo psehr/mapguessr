@@ -5,11 +5,12 @@ import Setup from "./Setup";
 import Game from "./Game";
 import Results from "./Results";
 import { findCurrent, startGame } from "../functions/game";
-import { Chat, SprintGameData } from "../../../../types";
+import { Chat, SprintGameData } from "@/types";
 import Loading from "./Loading";
 import { openChatSession } from "../functions/chat";
 import React from "react";
 import { Session } from "next-auth";
+import ErrorPage from "./ErrorPage";
 
 export default function Sprint(props: { session: Session }) {
   const [view, setView] = useState("setup");
@@ -25,22 +26,28 @@ export default function Sprint(props: { session: Session }) {
     setChatData(data);
   };
 
+  const startGameFct = () => {
+    startGame(
+      setSprintGameData,
+      setView,
+      updateChat,
+      props.session,
+      sprintGameData!.difficulty,
+      sprintGameData!.skips,
+      sprintGameData!.multiplier!
+    );
+  };
+
   const currentView = () => {
     switch (view) {
       case "setup":
         return (
           <Setup
-            startGame={() =>
-              startGame(
-                setSprintGameData,
-                setView,
-                chatData,
-                updateChat,
-                props.session
-              )
-            }
+            session={props.session}
             chatData={chatData}
             updateChat={updateChat}
+            setSprintGameData={setSprintGameData}
+            setView={setView}
           ></Setup>
         );
       case "loading":
@@ -53,15 +60,8 @@ export default function Sprint(props: { session: Session }) {
             updateData={updateData}
             chatData={chatData}
             updateChat={updateChat}
-            startGame={() =>
-              startGame(
-                setSprintGameData,
-                setView,
-                chatData,
-                updateChat,
-                props.session
-              )
-            }
+            session={props.session}
+            startGame={startGameFct}
           ></Game>
         );
       case "results":
@@ -69,18 +69,21 @@ export default function Sprint(props: { session: Session }) {
           <Results
             updateView={setView}
             gameData={sprintGameData!}
-            startGame={() =>
-              startGame(
-                setSprintGameData,
-                setView,
-                chatData,
-                updateChat,
-                props.session
-              )
-            }
             chatData={chatData}
             updateChat={updateChat}
+            startGame={startGameFct}
+            session={props.session}
           ></Results>
+        );
+      case "error":
+        return (
+          <ErrorPage
+            status={500}
+            desc="⚠️ There was an error and your game could not be submitted, sorry for
+        the trouble ⚠️"
+            statusDesc="Internal Error"
+            updateView={setView}
+          ></ErrorPage>
         );
     }
   };

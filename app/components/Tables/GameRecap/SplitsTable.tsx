@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
-import { SprintGameData } from "../../../../../types";
-import { preciseTimeFormat } from "../../functions/utils";
+import { SprintGameData } from "@/types";
+import { preciseTimeFormat } from "../../../sprint/functions/utils";
+import React from "react";
 
 export default function SplitsTable(props: { gameData: SprintGameData }) {
   const renderRows = () => {

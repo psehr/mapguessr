@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { gameSorting } from "../../../../../types";
+import { gameSorting } from "@/types";
 
 export default function TableHead(props: {
   setSorting: any;
@@ -94,20 +94,11 @@ export default function TableHead(props: {
         CPM ⌨️
       </th>
       <th
-        className={`${
-          props.colsWidth.rankWidth
-        } my-auto border-r-2 border-c-dark-blue cursor-pointer ${
-          props.currSorting.col == "rank" ? "text-c-blue" : ""
-        }`}
-        onClick={() => {
-          props.setSorting({
-            col: "rank",
-            order: getAlternateSortingOrder(props.currSorting),
-          } as gameSorting);
-        }}
+        className={`${props.colsWidth.cpmWidth} my-auto border-r-2 border-c-dark-blue`}
       >
-        Rank 🌍
+        Difficulty
       </th>
+
       <th
         className={`${props.colsWidth.dateWidth} my-auto cursor-pointer ${
           props.currSorting.col == "date" ? "text-c-blue" : ""

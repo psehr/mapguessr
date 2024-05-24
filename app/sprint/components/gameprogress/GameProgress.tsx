@@ -1,12 +1,14 @@
 "use client";
 import { ReactNode, useEffect, useState } from "react";
-import { GameBeatmap, SprintGameData } from "../../../../../types";
+import { GameBeatmap, SprintGameData } from "@/types";
 import SlimCover from "./SlimCover";
+import { formatFullTitle, formatTitle } from "../../../../lib/utils";
 
 export default function GameProgress(props: { maps: GameBeatmap[] }) {
   const rendermaps = (maps: GameBeatmap[]) => {
     let mapNodes: ReactNode[] = [];
-    maps.forEach((map) => {
+    for (let index = 0; index < maps.length; index++) {
+      const map = maps[index];
       let borderColor, blurred, text, clickable;
       switch (map.status) {
         case "current":
@@ -17,7 +19,7 @@ export default function GameProgress(props: { maps: GameBeatmap[] }) {
           break;
         case "found":
           clickable = true;
-          text = map.metadata.artist + " - " + map.metadata.title;
+          text = formatTitle(formatTitle(map.metadata.title, 40, 4), 20, 2);
           borderColor = "green-600";
           blurred = false;
           break;
@@ -28,7 +30,7 @@ export default function GameProgress(props: { maps: GameBeatmap[] }) {
           blurred = true;
           break;
       }
-      text.length > 30 ? (text = `[...] - ${map.metadata.title}`) : null;
+
       mapNodes.push(
         <SlimCover
           url={map.metadata.slimcover}
@@ -37,10 +39,12 @@ export default function GameProgress(props: { maps: GameBeatmap[] }) {
           text={text}
           clickable={clickable}
           mapUrl={`https://osu.ppy.sh/beatmapsets/${map.metadata.id}`}
+          index={index + 1}
           key={map.metadata.artist + " - " + map.metadata.title}
         ></SlimCover>
       );
-    });
+    }
+
     return mapNodes;
   };
   return rendermaps(props.maps);

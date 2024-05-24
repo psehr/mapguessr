@@ -1,11 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { SprintGameData, gameSorting } from "../../../../../types";
+import { SprintGameData, gameSorting } from "@/types";
 import TableHead from "./TableHead";
 import TableRows from "./TableRows";
 
-export default function Table(props: { games: SprintGameData[] }) {
+export default function Leaderboard(props: {
+  games: SprintGameData[];
+  isLoading: boolean;
+}) {
   const [sortingOrder, setSortingOrder] = useState<gameSorting>({
     col: "time",
     order: "asc",
@@ -28,11 +31,12 @@ export default function Table(props: { games: SprintGameData[] }) {
         <thead className="w-full border-b-2 border-c-dark-blue bg-black/30 flex flex-col rounded-xl drop-shadow-lg mb-4">
           <TableHead colsWidth={colsWidth}></TableHead>
         </thead>
-        <tbody className="flex flex-col overflow-y-scroll scroll-smooth gap-1">
+        <tbody className="flex flex-col scroll-smooth gap-1 overflow-y-scroll h-full">
           <TableRows
             games={props.games}
             order={sortingOrder}
             colsWidth={colsWidth}
+            isLoading={props.isLoading}
           ></TableRows>
         </tbody>
       </table>

@@ -1,3 +1,5 @@
+import { SprintGameData } from "@/types";
+
 export function timeFormat(timeMs: number): string {
   let timeSec = parseFloat((timeMs / 1000).toFixed(0));
   let rawMins = timeSec / 60;
@@ -7,24 +9,49 @@ export function timeFormat(timeMs: number): string {
 }
 
 export function preciseTimeFormat(timeMs: number): string {
-  let timeSec = parseFloat((timeMs / 1000).toFixed(0));
-  let pTimeSec = parseFloat(
-    (parseFloat((timeMs / 1000).toFixed(4)) - timeSec).toFixed(2)
-  );
-  let rawMins = timeSec / 60;
-  let mins = Math.floor(rawMins);
-  let sec = Math.round((rawMins - mins) * 60);
-  return `${mins < 10 ? 0 : ""}${mins}:${sec < 10 ? 0 : ""}${(sec + pTimeSec).toFixed(2)}`;
+  let rawMins = Math.floor(timeMs / 1000 / 60);
+  let rawSecs = Math.floor(timeMs / 1000);
+  let rawUndredths = Math.floor(timeMs);
+
+  let mins = rawMins.toLocaleString('en-US', {
+    minimumIntegerDigits: 2,
+    useGrouping: false
+  })
+
+  let secs = (rawSecs - rawMins * 60).toLocaleString('en-US', {
+    minimumIntegerDigits: 2,
+    useGrouping: false
+  })
+
+  let hundredths = (Math.abs((rawUndredths - ((rawMins * 60) + (rawSecs * 1000))) / 10)).toLocaleString('en-US', {
+    minimumIntegerDigits: 2,
+    maximumFractionDigits: 0,
+    useGrouping: false
+  }).slice(0, 2)
+
+  return (`${mins}:${secs}.${hundredths}`)
 }
 
-export function calcRating(finalTime: number, accuracy: number) {
-  const a = accuracy * 100;
-  const b = finalTime / 1000;
+export function formattedTimeSplit(sgd: SprintGameData): string[] {
+  const startTime = sgd.startTime;
+  let splits: string[] = [];
+  sgd.beatmaps.forEach((map) => {
+    const diff = map.splitTime - startTime!;
+    splits.push(preciseTimeFormat(diff));
+  })
+  return splits
+}
 
-  const c = (0.3 * Math.pow(a, 2))
-  const d = (0.7 * b);
+export function calcRating(finalTime: number, accuracy: number, multiplier: number) {
+  const a = accuracy;
+  const t = finalTime / 1000;
 
-  const rating = (c / d) * 10;
-  console.log(finalTime, accuracy, rating)
+  // accuracy multiplier
+  const acc = Math.exp(Math.pow(a, 3)) - 0.2;
+
+  // time multiplier
+  const time = t / Math.pow(t, 2);
+
+  const rating = ((acc * time) * 200) * multiplier
   return parseFloat(rating.toFixed(2));
 }

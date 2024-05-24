@@ -1,16 +1,12 @@
 import { auth } from "@/auth";
-import GameHistory from "./components/gamehistory/GameHistory";
-import UserCard from "./components/usercard/UserCard";
-import { getUser, getUserSprint } from "@/lib/local_api";
-import { UserComplex } from "../../../types";
-import Protected from "../sprint/views/Protected";
 import Profile from "./components/Profile";
+import Protected from "../sprint/views/Protected";
 
-export default async function ProfilePage() {
+export default async function page() {
   const session = await auth();
-
   if (session) {
-    return <Profile username={session.user?.name!}></Profile>;
+    const user_id = session.user?.image?.split("/")[3].split("?")[0];
+    return <Profile user_id={user_id!} scope="private"></Profile>;
   } else {
     return <Protected></Protected>;
   }

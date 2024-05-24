@@ -1,44 +1,83 @@
-import { useState } from "react";
-import Chatbox from "../components/chat/Chatbox";
-import { Chat, ChatMessage } from "../../../../types";
-import { clearChat, newMessage } from "../functions/chat";
+import { useEffect, useState } from "react";
+import { Chat, DifficultySettingsTypes } from "@/types";
+import LeftBlock from "../components/setup/LeftBlock";
+import MiddleBlock from "../components/setup/MiddleBlock";
+import RightBlock from "../components/setup/RightBlock";
+import { getDefaultSkips, getRatingMultiplier } from "@/lib/utils";
+import { Session } from "next-auth";
+import { startGame } from "../functions/game";
+import { clearChat } from "../functions/chat";
 
 export default function Setup(props: {
-  startGame: any;
+  session: Session;
   chatData: Chat;
   updateChat: any;
+  setSprintGameData: any;
+  setView: any;
 }) {
-  let [buttonText, setButtonText] = useState("Play");
-  let [buttonColor, setButtonColor] = useState("bg-green-600");
+  const [currentDiff, setCurrentDiff] =
+    useState<DifficultySettingsTypes>("normal");
+  const [currentMultiplier, setCurrentMultiplier] = useState(1);
+  const [currSkips, setCurrSkips] = useState(getDefaultSkips(currentDiff));
+  const [isGameStarting, setIsGameStarting] = useState(false);
+
+  useEffect(() => {
+    clearChat(props.updateChat);
+  }, []);
+
+  useEffect(() => {
+    setCurrentMultiplier(getRatingMultiplier(currentDiff, currSkips));
+  }, [currSkips]);
+
+  useEffect(() => {
+    setCurrSkips(getDefaultSkips(currentDiff));
+  }, [currentDiff]);
+
+  const startGameFct = () => {
+    startGame(
+      props.setSprintGameData,
+      props.setView,
+      props.updateChat,
+      props.session,
+      currentDiff,
+      currSkips,
+      currentMultiplier
+    );
+  };
 
   return (
     <div className="w-full h-full flex flex-row justify-center items-center md:space-x-6 text-c-dark">
-      <div className="w-[16%] h-[70%] bg-c-dark rounded-2xl flex flex-col-reverse">
-        <button
-          className={`w-32 h-12 p-2 rounded-lg mx-auto mb-8 text-center text-c-white text-2xl font-bold place-content-center transition-colors ease-in-out duration-700 ${buttonColor}`}
-          onClick={() => {
-            setButtonText("3");
-            setButtonColor("bg-yellow-600");
-            setTimeout(() => {
-              setButtonText("2");
-              setButtonColor("bg-orange-600");
-              setTimeout(() => {
-                setButtonText("1");
-                setButtonColor("bg-red-600");
-                setTimeout(() => {
-                  props.startGame();
-                }, 1000);
-              }, 1000);
-            }, 1000);
-          }}
-        >
-          {buttonText}
-        </button>
+      <div className="w-1/4 h-[70%] rounded-xl flex flex-col">
+        <LeftBlock
+          currentDiff={currentDiff}
+          setCurrentDiff={setCurrentDiff}
+          chatData={props.chatData}
+          updateChat={props.updateChat}
+          currentMulti={currentMultiplier}
+          setCurrentSkips={setCurrSkips}
+          currentSkips={currSkips}
+          isGameStarting={isGameStarting}
+        ></LeftBlock>
       </div>
-      <Chatbox
-        chatData={props.chatData}
-        updateChat={props.updateChat}
-      ></Chatbox>
+      <div className="w-[40%] h-[80%] base-container rounded-xl flex flex-col">
+        <MiddleBlock
+          startGame={startGameFct}
+          chatData={props.chatData}
+          updateChat={props.updateChat}
+          currentDiff={currentDiff}
+          currentMultiplier={currentMultiplier}
+          currentSkips={currSkips}
+          isGameStarting={isGameStarting}
+          setIsGameStarting={setIsGameStarting}
+        ></MiddleBlock>
+      </div>
+      <div className="w-1/4 h-[70%] rounded-xl flex flex-col">
+        <RightBlock
+          chatData={props.chatData}
+          updateChat={props.updateChat}
+          session={props.session}
+        ></RightBlock>
+      </div>
     </div>
   );
 }

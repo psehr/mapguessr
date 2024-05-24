@@ -8,15 +8,12 @@ import {
   useSearchParams,
 } from "next/navigation";
 import { useEffect, useState } from "react";
-import {
-  GameModes,
-  SprintGameData,
-  User,
-  UserComplex,
-} from "../../../../../types";
+import { GameModes, SprintGameData, User, UserComplex } from "@/types";
 import GameProgress from "@/app/sprint/components/gameprogress/GameProgress";
 import Loading from "@/app/sprint/views/Loading";
 import UserCard from "@/app/profile/components/usercard/UserCard";
+import GameRecap from "@/app/components/Tables/GameRecap/GameRecap";
+import MiddleBlock from "./MiddleBlock";
 
 export default function GameDetails({
   params,
@@ -34,7 +31,7 @@ export default function GameDetails({
       setGame(foundGame);
     });
     getUser("id", user_id).then((foundUser) => {
-      getUserSprint(foundUser.username).then((games) => {
+      getUserSprint(foundUser.username, game?.difficulty!).then((games) => {
         setUser({ games: games, user: foundUser });
       });
     });
@@ -42,12 +39,18 @@ export default function GameDetails({
   if (game && user) {
     return (
       <div className="h-[90%] w-[90%] md:h-[71%] md:w-[90%] flex flex-row justify-center items-center m-auto gap-10">
-        <div className="w-[25%] h-full flex flex-col">
+        <div className="w-[25%] h-full flex flex-col place-content-center items-center">
           <GameProgress maps={game?.beatmaps}></GameProgress>
         </div>
-        <div className="w-[50%] h-full flex flex-col bg-black/20"></div>
-        <div className="w-[25%] h-full flex flex-col">
-          <UserCard userData={user} scope="public"></UserCard>
+        <div className="w-[40%] h-full flex flex-col place-content-center items-center">
+          <MiddleBlock sgd={game}></MiddleBlock>
+        </div>
+        <div className="w-[20%] h-full flex flex-col">
+          <UserCard
+            userData={user}
+            scope="public"
+            currentDiff={game.difficulty}
+          ></UserCard>
         </div>
       </div>
     );

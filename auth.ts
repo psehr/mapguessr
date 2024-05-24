@@ -20,7 +20,8 @@ const config = {
                     last_logged: Date.now(),
                     username: osuProfile.username,
                     image: osuProfile.avatar_url,
-                    country: osuProfile.country_code
+                    country: osuProfile.country_code,
+                    role: 'player'
                 })
             } else {
                 await db.collection('users').doc(osuProfile.id.toString()).update({

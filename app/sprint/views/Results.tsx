@@ -1,4 +1,5 @@
-import { Chat, SprintGameData } from "../../../../types";
+import { Session } from "next-auth";
+import { Chat, SprintGameData } from "@/types";
 import Chatbox from "../components/chat/Chatbox";
 import GameProgress from "../components/gameprogress/GameProgress";
 import ResultsBlock from "../components/results/ResultsBlock";
@@ -9,23 +10,31 @@ export default function Results(props: {
   startGame: any;
   chatData: Chat;
   updateChat: any;
+  session: Session;
 }) {
   return (
-    <div className="w-full h-full flex flex-row justify-center items-center md:space-x-6 text-c-dark">
+    <div className="h-[90%] w-[90%] md:h-[71%] md:w-[90%] flex flex-row justify-center items-center m-auto gap-10">
       {/* A recap of the current game, hidden on mobile */}
-      <div className="hidden md:flex flex-col w-[16%] h-[70%] bg-c-dark bg-opacity-30 justify-start items-center overflow-scroll snap-start py-2 rounded-2xl drop-shadow-lg">
+      <div className="w-[25%] h-full flex flex-col place-content-center items-center">
         <GameProgress maps={props.gameData.beatmaps}></GameProgress>
       </div>
-      <ResultsBlock
-        gameData={props.gameData}
-        updateView={props.updateView}
-        startGame={props.startGame}
-      ></ResultsBlock>
+      <div className="w-[40%] h-full flex flex-col place-content-center items-center">
+        <ResultsBlock
+          gameData={props.gameData}
+          updateView={props.updateView}
+          startGame={props.startGame}
+          chatData={props.chatData}
+          updateChat={props.updateChat}
+        ></ResultsBlock>
+      </div>
       {/* A chatbox with logs of the current game, and possibly user messages. Also hidden on mobile */}
-      <Chatbox
-        chatData={props.chatData}
-        updateChat={props.updateChat}
-      ></Chatbox>
+      <div className="w-[20%] h-full flex flex-col">
+        <Chatbox
+          chatData={props.chatData}
+          updateChat={props.updateChat}
+          from={props.session.user?.name!}
+        ></Chatbox>
+      </div>
     </div>
   );
 }

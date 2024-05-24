@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useRef } from "react";
-import { Chat } from "../../../../../types";
+import { Chat } from "@/types";
 import ChatMsg from "./ChatMsg";
 
 export default function ChatLog(props: { chatData: Chat }) {
@@ -21,7 +21,7 @@ export default function ChatLog(props: { chatData: Chat }) {
     }
   }, [props.chatData]);
   return (
-    <div className="w-[90%] h-fit overflow-scroll snap-end my-2 space-y-2 transition-all ease-in-out">
+    <div className="w-[90%] h-full snap-end space-y-2 transition-all ease-in-out overflow-y-scroll place-content-end">
       {renderChat(props.chatData)}
       <div ref={bottomOfChatRef}></div>
     </div>

@@ -1,5 +1,5 @@
 import { preciseTimeFormat } from "@/app/sprint/functions/utils";
-import { SprintGameData, gameSorting } from "../../../../types";
+import { BeatmapAdmin, BeatmapSorting, SprintGameData, gameSorting } from "@/types";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en"
 TimeAgo.addDefaultLocale(en);
@@ -117,4 +117,39 @@ export const sortGames = (games: SprintGameData[], sorting: gameSorting) => {
     }
     return sorted;
 };
+
+export function sortBeatmaps(beatmaps: BeatmapAdmin[], sorting: BeatmapSorting) {
+    let sorted = [...beatmaps];
+
+    switch (sorting.col) {
+        case 'date':
+            sorted.sort((a, b) => {
+                let c;
+                sorting.order == 'asc'
+                    ? (c = Date.parse(a.lastUpdated) - Date.parse(b.lastUpdated))
+                    : (c = Date.parse(b.lastUpdated) - Date.parse(a.lastUpdated));
+                return c
+            })
+            break;
+        case 'poprating':
+            sorted.sort((a, b) => {
+                let c;
+                sorting.order == 'asc'
+                    ? (c = a.popRating - b.popRating)
+                    : (c = b.popRating - a.popRating)
+                return c
+            })
+            break;
+        case 'skiprate':
+            sorted.sort((a, b) => {
+                let c;
+                sorting.order == 'asc'
+                    ? (c = (a.skipcount / (a.playcount + 0.0000001)) - (b.skipcount / (b.playcount + 0.0000001)))
+                    : (c = (b.skipcount / (b.playcount + 0.0000001)) - (a.skipcount / (a.playcount + 0.0000001)))
+                return c
+            })
+            break;
+    }
+    return sorted;
+}
 

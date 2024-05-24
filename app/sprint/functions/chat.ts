@@ -1,4 +1,4 @@
-import { Chat, ChatMessage } from "../../../../types";
+import { Chat, ChatMessage } from "@/types";
 
 export function openChatSession(): Chat {
   let c: Chat = {

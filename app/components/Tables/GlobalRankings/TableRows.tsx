@@ -1,7 +1,7 @@
 "use client";
 
-import { ReactNode } from "react";
-import { SprintGameData, gameSorting } from "../../../../../types";
+import { ReactNode, useEffect, useState } from "react";
+import { SprintGameData, gameSorting } from "@/types";
 import {
   accuracy,
   gameTimeAgo,
@@ -16,12 +16,14 @@ export default function TableRows(props: {
   games: SprintGameData[];
   order: gameSorting;
   colsWidth: any;
+  isLoading: boolean;
 }) {
   const router = useRouter();
+
   const renderRows = (games: SprintGameData[], order: gameSorting) => {
     let rows: ReactNode[] = [];
     let sortedGames = sortGames(games, order);
-    if (sortedGames.length > 0) {
+    if (sortedGames.length || props.isLoading) {
       for (let index = 0; index < sortedGames.length; index++) {
         const game = sortedGames[index];
         rows.push(

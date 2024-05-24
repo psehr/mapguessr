@@ -1,20 +1,41 @@
-import { Scope, UserComplex } from "../../../../../types";
+import { DifficultySettingsTypes, Scope, UserComplex } from "@/types";
 import UserImage from "./UserImage";
 import UserDetails from "./UserDetails";
-import Buttons from "../buttons/Buttons";
+import ProfileButtons from "../buttons/ProfileButtons";
+import RefreshButton from "../buttons/RefreshButton";
 
 export default function UserCard(props: {
   userData: UserComplex;
   scope: Scope;
+  refreshData?: any;
+  currentDiff: DifficultySettingsTypes;
 }) {
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full h-full flex flex-col p-2 gap-4 rounded-xl place-content-center items-center">
       {/* Image group */}
-      <UserImage userData={props.userData}></UserImage>
+      <div className="w-fit h-fit flex flex-col">
+        <UserImage userData={props.userData}></UserImage>
+      </div>
+
       {/* User stats group */}
-      <UserDetails userData={props.userData}></UserDetails>
+
+      <div className="w-full h-fit flex flex-col place-content-center items-center">
+        {props.currentDiff != "any" ? (
+          <UserDetails userData={props.userData}></UserDetails>
+        ) : (
+          ""
+        )}
+      </div>
+
       {/* Buttons */}
-      {/* <Buttons scope={props.scope}></Buttons> */}
+      {props.scope == "private" ? (
+        <div className="w-full h-fit flex flex-row gap-4 place-content-center items-center">
+          <ProfileButtons></ProfileButtons>
+          <RefreshButton refreshData={props.refreshData}></RefreshButton>
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 }

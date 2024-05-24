@@ -21,6 +21,7 @@ const config: Config = {
         "c-dark": "#393E46",
         "c-darker": "#222831",
       },
+
     },
   },
   variants: {

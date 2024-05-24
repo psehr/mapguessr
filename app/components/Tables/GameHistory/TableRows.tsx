@@ -1,10 +1,16 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-import { SprintGameData, UserComplex, gameSorting } from "../../../../../types";
-import { accuracy, gameTimeAgo, isPB, sortGames } from "../../functions/utils";
+import { SprintGameData, UserComplex, gameSorting } from "@/types";
+import {
+  accuracy,
+  gameTimeAgo,
+  isPB,
+  sortGames,
+} from "../../../profile/functions/utils";
 import { preciseTimeFormat } from "../../../sprint/functions/utils";
 import { useRouter } from "next/navigation";
+import { capitalizeFirst, diffColor } from "@/lib/utils";
 
 export default function TableRows(props: {
   userData: UserComplex;
@@ -62,11 +68,16 @@ export default function TableRows(props: {
               {curr.cpm || "?"}
             </td>
             <td
-              className={`my-auto border-r-2 border-c-white/30 ${props.colsWidth.rankWidth}`}
+              className={`my-auto border-r-2 border-c-white/30 ${
+                props.colsWidth.diffLevelWidth
+              } ${diffColor(curr.difficulty)}`}
             >
-              ?
+              {capitalizeFirst(curr.difficulty) || "?"}
             </td>
-            <td className={`my-auto ${props.colsWidth.dateWidth}`}>
+            <td
+              className={`my-auto ${props.colsWidth.dateWidth}`}
+              title={new Date(curr.endTime!).toUTCString()}
+            >
               {gameTimeAgo(curr.endTime!)}
             </td>
           </tr>

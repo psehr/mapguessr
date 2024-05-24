@@ -1,4 +1,4 @@
-import { SprintGameData } from "../../../../../types";
+import { SprintGameData } from "@/types";
 import Timer from "../playfield/Timer";
 import { preciseTimeFormat, timeFormat } from "../../functions/utils";
 

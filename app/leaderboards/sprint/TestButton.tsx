@@ -8,8 +8,7 @@ export default async function TestButton() {
       <form
         action={async () => {
           "use server";
-          let games = await getLeaderboards("sprint");
-          console.log(games.length);
+          // let games = await getLeaderboards("sprint");
         }}
       >
         <button

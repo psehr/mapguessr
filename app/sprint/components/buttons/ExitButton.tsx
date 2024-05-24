@@ -34,10 +34,12 @@ const exitSvg = (
 
 export default function ExitButton(props: { updateView: any }) {
   let [buttonText, setButtonText] = useState("");
-  let [buttonColor, setButtonColor] = useState("bg-red-600");
+  let [buttonColor, setButtonColor] = useState(
+    "bg-red-600/40 hover:bg-red-600/60"
+  );
   return (
     <button
-      className={`h-full w-24 px-8 rounded-2xl text-c-white text-2xl text-center font-bold transition-colors ease-in-out duration-700 ${buttonColor}`}
+      className={`h-full w-24 px-8 rounded-2xl text-c-white text-2xl text-center font-bold transition-colors ease-in-out ${buttonColor}`}
       onClick={() => {
         props.updateView("setup");
       }}

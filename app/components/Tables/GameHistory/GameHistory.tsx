@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import { UserComplex, gameSorting } from "../../../../../types";
+import { UserComplex, gameSorting } from "@/types";
 
 import TableHead from "./TableHead";
 import TableRows from "./TableRows";
 
 export default function GameHistory(props: { userData: UserComplex }) {
   const [sortingOrder, setSortingOrder] = useState<gameSorting>({
-    col: "time",
+    col: "date",
     order: "asc",
   });
 
@@ -19,7 +19,7 @@ export default function GameHistory(props: { userData: UserComplex }) {
     ratingWidth: "w-[15%]",
     skipsWidth: "w-[10%]",
     cpmWidth: "w-[10%]",
-    rankWidth: "w-[10%]",
+    diffLevelWidth: "w-[10%]",
     dateWidth: "w-[20%]",
   };
 
@@ -33,7 +33,7 @@ export default function GameHistory(props: { userData: UserComplex }) {
             colsWidth={colsWidth}
           ></TableHead>
         </thead>
-        <tbody className="flex flex-col overflow-y-scroll scroll-smooth gap-1">
+        <tbody className="flex flex-col overflow-y-auto scroll-smooth gap-1">
           <TableRows
             userData={props.userData}
             order={sortingOrder}
